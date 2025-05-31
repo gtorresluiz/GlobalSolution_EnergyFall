@@ -10,13 +10,13 @@
             {
                 try
                 {
-                    Console.WriteLine($"🔄 Reiniciando {service}...");
+                    Console.WriteLine($" Reiniciando {service}...");
                     Thread.Sleep(1000); // Simula tempo de reinício
-                    Console.WriteLine($"✅ {service} reiniciado.");
+                    Console.WriteLine($" {service} reiniciado.");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ Falha ao reiniciar {service}: {ex.Message}");
+                    Console.WriteLine($"Falha ao reiniciar {service}: {ex.Message}");
                 }
             }
         }

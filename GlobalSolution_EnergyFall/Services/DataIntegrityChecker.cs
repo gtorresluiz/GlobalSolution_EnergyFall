@@ -6,7 +6,7 @@ namespace GlobalSolution_EnergyFall.Services
     {
         public void Check()
         {
-            Console.WriteLine("\n📊 Verificando integridade dos dados...");
+            Console.WriteLine("\n Verificando integridade dos dados...");
 
             try
             {
@@ -16,18 +16,18 @@ namespace GlobalSolution_EnergyFall.Services
 
                 if (hasCorruption)
                 {
-                    Console.WriteLine("⚠️ Arquivos corrompidos detectados!");
-                    LogService.Log("Corrupção detectada em arquivos críticos.");
+                    Console.WriteLine(" Arquivos corrompidos detectados!");
+                    LogService.Log(" Corrupção detectada em arquivos críticos.");
                 }
                 else
                 {
-                    Console.WriteLine("✅ Todos os dados estão íntegros.");
-                    LogService.Log("Nenhuma corrupção detectada.");
+                    Console.WriteLine(" Todos os dados estão íntegros.");
+                    LogService.Log(" Nenhuma corrupção detectada.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao verificar integridade: {ex.Message}");
+                Console.WriteLine($" Erro ao verificar integridade: {ex.Message}");
             }
         }
     }

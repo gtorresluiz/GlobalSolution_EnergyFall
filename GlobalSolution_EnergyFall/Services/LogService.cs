@@ -6,7 +6,7 @@
 
         public static void Log(string message)
         {
-            string logEntry = $"{DateTime.Now}: {message}";
+            string logEntry = $" {DateTime.Now}: {message}";
             File.AppendAllText(logFile, logEntry + Environment.NewLine);
         }
 
@@ -19,7 +19,7 @@
 
         public static void GenerateStatusReport()
         {
-            Console.WriteLine("\n📋 Relatório de status final:");
+            Console.WriteLine("\n Relatório de status final:");
             var logs = ReadLogs();
             foreach (var line in logs)
             {
