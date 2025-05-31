@@ -1,4 +1,5 @@
-﻿using GlobalSolution_EnergyFall.Services;
+﻿using GlobalSolution_EnergyFall.Log;
+using GlobalSolution_EnergyFall.Services;
 
 namespace GlobalSolution_EnergyFall.Services
 {

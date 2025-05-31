@@ -12,5 +12,16 @@
             Email = email;
             Password = password;
         }
+        
+        public override string ToString()
+        {
+            return $"{Name};{Email};{Password}";
+        }
+
+        public static User FromString(string line)
+        {
+            var parts = line.Split(';');
+            return new User(parts[0], parts[1], parts[2]);
+        }
     }
 }

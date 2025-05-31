@@ -1,23 +1,17 @@
-﻿using GlobalSolution_EnergyFall.Services;
+﻿using GlobalSolution_EnergyFall.Log;
 
-namespace GlobalSolution_EnergyFall.Services
+namespace GlobalSolution_EnergyFall.Alert
 {
-    public class AlertManager
+    public static class AlertManager
     {
-        public void CheckForIssues()
+        public static void ShowLastLogs()
         {
-            Console.WriteLine("\n🔔 Verificando necessidade de alertas...");
-
-            // Simula um alerta caso algum log contenha "corrupção"
             var logs = LogService.ReadLogs();
-            if (logs.Any(log => log.Contains("Corrupção")))
+
+            Console.WriteLine("\n--- Últimos Logs ---");
+            foreach (var log in logs.TakeLast(10))
             {
-                Console.WriteLine("🚨 ALERTA: Corrupção de dados detectada!");
-                LogService.Log("Alerta gerado: Corrupção de dados.");
-            }
-            else
-            {
-                Console.WriteLine("✅ Nenhum alerta necessário.");
+                Console.WriteLine(log);
             }
         }
     }

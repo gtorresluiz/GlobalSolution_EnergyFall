@@ -1,30 +1,23 @@
-﻿namespace GlobalSolution_EnergyFall.Services
+﻿using System;
+
+namespace GlobalSolution_EnergyFall.Log
 {
     public static class LogService
     {
-        private static readonly string logFile = "eventlog.txt";
+        private static readonly string logPath = "log.txt";
 
-        public static void Log(string message)
+        public static void Log(string message, string userName = "Sistema")
         {
-            string logEntry = $" {DateTime.Now}: {message}";
-            File.AppendAllText(logFile, logEntry + Environment.NewLine);
+            string entry = $"[{DateTime.Now}] [{userName}] {message}";
+            File.AppendAllText(logPath, entry + Environment.NewLine);
         }
 
         public static List<string> ReadLogs()
         {
-            return File.Exists(logFile)
-                ? File.ReadAllLines(logFile).ToList()
-                : new List<string>();
-        }
+            if (!File.Exists(logPath))
+                return new List<string>();
 
-        public static void GenerateStatusReport()
-        {
-            Console.WriteLine("\n Relatório de status final:");
-            var logs = ReadLogs();
-            foreach (var line in logs)
-            {
-                Console.WriteLine(line);
-            }
+            return File.ReadAllLines(logPath).ToList();
         }
     }
 }

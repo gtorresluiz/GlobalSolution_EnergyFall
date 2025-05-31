@@ -1,62 +1,108 @@
-﻿using GlobalSolution_EnergyFall.Services;
-using GlobalSolution_EnergyFall.Auth;
+﻿using GlobalSolution_EnergyFall.Auth;
+using GlobalSolution_EnergyFall.Log;
+using System;
+using System.Threading;
 
-class Program
+namespace GlobalSolution_EnergyFall
 {
-    static void Main(string[] args)
+    class Program
     {
-        Console.WriteLine("Simulando queda de energia...");
-        Thread.Sleep(2500); // Simula tempo offline
-
-        bool authenticated = false;
-
-        while (!authenticated)
+        static void Main()
         {
-            Console.WriteLine("Bem-vindo ao Sistema de Energia");
-            Console.WriteLine("1 - Login");
-            Console.WriteLine("2 - Cadastro");
-            Console.Write("Escolha uma opção: ");
-            string option = Console.ReadLine();
+            int userCountBefore = AuthService.GetUserCount();
+            bool authenticated = false;
+            string loggedUserName = "";
 
-            Console.Write("Email: ");
-            string email = Console.ReadLine();
-
-            Console.Write("Senha: ");
-            string password = Console.ReadLine();
-
-            switch (option)
+            while (!authenticated)
             {
-                case "1":
-                    authenticated = AuthService.Login(email, password);
-                    break;
-                case "2":
-                    Console.Write("Nome: ");
-                    string name = Console.ReadLine();
-                    AuthService.Register(name, email, password);
-                    break;
-                default:
-                    Console.WriteLine("Opção inválida.");
-                    break;
+                Console.WriteLine("\n1 - Login");
+                Console.WriteLine("2 - Cadastro");
+                Console.Write("Escolha uma opção: ");
+
+                string optionInput = Console.ReadLine();
+                int option;
+
+                try
+                {
+                    if (!int.TryParse(optionInput, out option))
+                        throw new FormatException("Entrada inválida. Digite apenas números (1 ou 2).");
+
+                    Console.Write("Email: ");
+                    string email = Console.ReadLine();
+
+                    Console.Write("Senha: ");
+                    string password = Console.ReadLine();
+
+                    switch (option)
+                    {
+                        case 1:
+                            authenticated = AuthService.Login(email, password);
+                            if (authenticated)
+                            {
+                                loggedUserName = AuthService.GetUserName(email);
+                                LogService.Log("Login realizado com sucesso.", loggedUserName);
+                            }
+                            break;
+
+                        case 2:
+                            Console.Write("Nome: ");
+                            string name = Console.ReadLine();
+                            bool registered = AuthService.Register(name, email, password);
+                            if (registered)
+                            {
+                                LogService.Log("Usuário cadastrado com sucesso.", name);
+                            }
+                            break;
+
+                        default:
+                            Console.WriteLine("Opção inválida. Escolha 1 ou 2.");
+                            break;
+                    }
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine($"Erro: {ex.Message}");
+                    LogService.Log("Erro de entrada: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Ocorreu um erro inesperado.");
+                    LogService.Log("Erro inesperado: " + ex.Message);
+                }
             }
+
+            // 🔌 Simula queda de energia
+            Console.WriteLine("\n---  QUEDA DE ENERGIA SIMULADA ---");
+            LogService.Log(" Simulação de queda de energia iniciada.", loggedUserName);
+
+            SimularQuedaDeEnergia(userCountBefore, loggedUserName);
         }
 
-        Console.WriteLine("Energia restabelecida. Reiniciando servidor...\n");
+        static void SimularQuedaDeEnergia(int usuariosAntes, string usuario)
+        {
+            Console.WriteLine("\nReinicializando o sistema...");
+            Thread.Sleep(2000);
 
-        // Reinicia serviços simulados
-        ServiceRestarter restarter = new();
-        restarter.RestartAllServices();
+            int usuariosDepois = AuthService.GetUserCount();
+            var logs = LogService.ReadLogs();
 
-        // Verifica integridade dos dados
-        DataIntegrityChecker integrityChecker = new();
-        integrityChecker.Check();
+            Console.WriteLine("\n---  Diagnóstico pós-queda ---");
+            Console.WriteLine($"Usuários antes da queda: {usuariosAntes}");
+            Console.WriteLine($"Usuários após a queda:  {usuariosDepois}");
 
-        // Gera alerta caso necessário
-        AlertManager alertManager = new();
-        alertManager.CheckForIssues();
+            if (usuariosDepois < usuariosAntes)
+                Console.WriteLine("  Perda de dados detectada!");
+            else
+                Console.WriteLine(" Nenhuma perda de dados identificada.");
 
-        // Gera log final
-        LogService.GenerateStatusReport(); 
+            Console.WriteLine("\n---  Últimos logs registrados ---");
+            foreach (var log in logs.TakeLast(5))
+                Console.WriteLine(log);
 
-        Console.WriteLine("\nSistema reiniciado com sucesso!");
+            LogService.Log("Diagnóstico pós-falha concluído.", usuario);
+
+            Console.WriteLine("\nSistema finalizado com sucesso.\n");
+            Environment.Exit(0);
+        }
     }
 }
