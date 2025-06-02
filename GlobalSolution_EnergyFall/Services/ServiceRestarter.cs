@@ -11,7 +11,7 @@
                 try
                 {
                     Console.WriteLine($" Reiniciando {service}...");
-                    Thread.Sleep(1000); // Simula tempo de reinício
+                    Thread.Sleep(1000); 
                     Console.WriteLine($" {service} reiniciado.");
                 }
                 catch (Exception ex)

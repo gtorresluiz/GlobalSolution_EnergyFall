@@ -1,7 +1,5 @@
 ﻿using GlobalSolution_EnergyFall.Auth;
 using GlobalSolution_EnergyFall.Log;
-using System;
-using System.Threading;
 
 namespace GlobalSolution_EnergyFall
 {
@@ -41,6 +39,20 @@ namespace GlobalSolution_EnergyFall
                             {
                                 loggedUserName = AuthService.GetUserName(email);
                                 LogService.Log("Login realizado com sucesso.", loggedUserName);
+
+                                Console.WriteLine("\nAcessando painel principal...");
+                                Thread.Sleep(1000);
+                                MostrarMenuFakeCRUD();
+
+                                // Queda de energia simulada após menu
+                                Console.WriteLine("\n---  QUEDA DE ENERGIA SIMULADA ---");
+                                LogService.Log(" Simulação de queda de energia iniciada.", loggedUserName);
+
+                                SimularQuedaDeEnergia(userCountBefore, loggedUserName);
+                            }
+                            else
+                            {
+                                Console.WriteLine(" Email ou senha inválidos.");
                             }
                             break;
 
@@ -51,6 +63,10 @@ namespace GlobalSolution_EnergyFall
                             if (registered)
                             {
                                 LogService.Log("Usuário cadastrado com sucesso.", name);
+                            }
+                            else
+                            {
+                                Console.WriteLine(" Email já cadastrado.");
                             }
                             break;
 
@@ -70,12 +86,19 @@ namespace GlobalSolution_EnergyFall
                     LogService.Log("Erro inesperado: " + ex.Message);
                 }
             }
+        }
 
-            // 🔌 Simula queda de energia
-            Console.WriteLine("\n---  QUEDA DE ENERGIA SIMULADA ---");
-            LogService.Log(" Simulação de queda de energia iniciada.", loggedUserName);
+        static void MostrarMenuFakeCRUD()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Sistema CRUD ===");
+            Console.WriteLine("1 - Criar objeto");
+            Console.WriteLine("2 - Ler objeto");
+            Console.WriteLine("3 - Editar objeto");
+            Console.WriteLine("4 - Deletar objeto");
+            Console.WriteLine("5 - Sair");
 
-            SimularQuedaDeEnergia(userCountBefore, loggedUserName);
+            Thread.Sleep(2500); // Simula tempo de resposta antes da queda
         }
 
         static void SimularQuedaDeEnergia(int usuariosAntes, string usuario)
